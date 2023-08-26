@@ -1,10 +1,17 @@
 package dev.twilightsociety.ijoiner;
 
-import dev.twilightsociety.ijoiner.commons.YamlConfig;
+import dev.twilightsociety.ijoiner.commons.config.YamlConfig;
 
 public class Settings extends YamlConfig {
     @Ignore
     public static final Settings IMP = new Settings();
+
+    @Comment("""
+            
+            
+            
+            """)
+    public boolean ENABLED = true;
 
     @Comment("Вывод debug сообщений, необходимо если что-то идет не так.")
     public boolean DEBUG = false;
@@ -29,5 +36,20 @@ public class Settings extends YamlConfig {
         MYSQL,
         MARIADB,
         LOCAL
+    }
+
+    @Create
+    public MESSAGES MESSAGES;
+    @Comment("Сообщения и логи в консоле")
+    public static class MESSAGES {
+        public String RELOAD = "&c&l[!] &aiJoiner успешно перезапущен.";
+        public String RELOAD_FAILED = "&c&l[!] &cНе удалось перезапуститься. &7[Смотрите в консоле]";
+        public String UNKNOWN_COMMAND = "&c&l[!] &cНеизвестная подкоманда.";
+        public String NOPERM = "&c&l[!] &cНедостаточно прав.";
+        public String NO_ARGS = "&c&l[!] &cНедостаточно аргументов.";
+        public String CLEARED = "&c&l[!] &aПользовательский текст при заходе на сервер успешно удалён. &7(Теперь писатся будет случайный из предложенных.)";
+        public String CLEAR_FAILED = "&c&l[!] &cНе удалось удалить пользовательский текст. &fОбратитесь к Администрацией";
+        public String SETTED = "&c&l[!] &aПользовательский текст успешно установлен. &7(Он будет синхронизирован на всех режимах.)";
+        public String SET_FAILED = "&c&l[!] &cНе удалось установить пользовательский текст. &fОбратитесь к Администрацией.";
     }
 }

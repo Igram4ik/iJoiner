@@ -18,11 +18,16 @@ public class Commands implements CommandExecutor, TabCompleter {
     public Commands(iJoiner plugin) {
         this.plugin = plugin;
 
-        reload = pLC(Settings.IMP.MESSAGES.RELOAD);
-        reloadFailed = pLC(Settings.IMP.MESSAGES.RELOAD_FAILED);
-        unknown = pLC(Settings.IMP.MESSAGES.UNKNOWN_COMMAND);
-        noPerm = pLC(Settings.IMP.MESSAGES.NOPERM);
-        noArgs = pLC(Settings.IMP.STORAGE);
+        var MSGS = Settings.IMP.MESSAGES;
+        reload = pLC(MSGS.RELOAD);
+        reloadFailed = pLC(MSGS.RELOAD_FAILED);
+        unknown = pLC(MSGS.UNKNOWN_COMMAND);
+        noPerm = pLC(MSGS.NOPERM);
+        noArgs = pLC(MSGS.NO_ARGS);
+        cleared = pLC(MSGS.CLEARED);
+        clearFailed = pLC(MSGS.CLEAR_FAILED);
+        setted = pLC(MSGS.SETTED);
+        setFailed = pLC(MSGS.SET_FAILED);
     }
     private final iJoiner plugin;
     private final Component reload;
@@ -45,6 +50,23 @@ public class Commands implements CommandExecutor, TabCompleter {
             sender.sendMessage(noPerm);
             return true;
         }
+        //
+        if (args[0].equalsIgnoreCase("reload")) {
+            if (sender.hasPermission("ijoiner.reload")) {
+                if (iJoiner.getInstance().reload())
+                    sender.sendMessage(reload);
+                else
+                    sender.sendMessage(reloadFailed);
+            } else {
+                sender.sendMessage(noPerm);
+                return true;
+            }
+        } else if (args[0].equalsIgnoreCase("clear")) {
+            if (sender.hasPermission("ijoiner.clear")) {
+                if ()
+            }
+        }
+        //
         return true;
     }
 

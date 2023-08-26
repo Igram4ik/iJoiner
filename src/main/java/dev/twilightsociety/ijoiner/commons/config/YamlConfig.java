@@ -1,8 +1,7 @@
-package dev.twilightsociety.ijoiner.commons;
+package dev.twilightsociety.ijoiner.commons.config;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.Nullable;
@@ -30,7 +29,7 @@ public class YamlConfig {
     private final FieldNameStyle classFieldNameStyle;
     private final FieldNameStyle nodeFieldNameStyle;
 
-    private Logger logger = LoggerFactory.getLogger(YamlConfig.class);
+    private Logger logger = Logger.getLogger(YamlConfig.class.getName());
 
     public YamlConfig() {
         this.classFieldNameStyle = FieldNameStyle.MACRO_CASE;
@@ -192,7 +191,7 @@ public class YamlConfig {
                                 throw new IllegalAccessException(field.getType() + " is incompatible with placeholders");
                             }
                             Placeholders placeholders = field.getAnnotation(Placeholders.class);
-                            int hash = dev.igrammine.commons.config.Placeholders.addPlaceholders(value, placeholders.value());
+                            int hash = dev.twilightsociety.ijoiner.commons.config.Placeholders.addPlaceholders(value, placeholders.value());
                             this.placeholders.add(hash);
                         } else if (field.getGenericType() instanceof ParameterizedType) {
                             if (field.getType() == Map.class && value instanceof Map) {
@@ -221,7 +220,7 @@ public class YamlConfig {
                         this.setField(field, instance, value);
                     }
                 } catch (Throwable t) {
-                    this.logger.debug("Failed to set config option: " + key + ": " + value + " | " + instance);
+                    this.logger.info("Failed to set config option: " + key + ": " + value + " | " + instance);
                     if (configFile != null) {
                         Path parent = configFile.getParent();
                         if (parent == null) {
@@ -232,9 +231,9 @@ public class YamlConfig {
                         if (!Files.exists(configFileBackup)) {
                             try {
                                 Files.copy(configFile, configFileBackup, StandardCopyOption.REPLACE_EXISTING);
-                                this.logger.warn("Unable to load some of the config options. File was copied to {}", configFileBackup.getFileName());
+                                this.logger.warning("Unable to load some of the config options. File was copied to " + configFileBackup.getFileName());
                             } catch (Throwable t2) {
-                                this.logger.warn("Unable to load some of the config options and to make a copy.", t2);
+                                this.logger.warning("Unable to load some of the config options and to make a copy. " + t2);
                             }
                         }
                     }
@@ -286,7 +285,7 @@ public class YamlConfig {
             field.setAccessible(true);
             return field;
         } catch (Throwable t) {
-            this.logger.debug("Invalid config field: " + String.join(".", split) + " for " + instance.getClass().getSimpleName());
+            this.logger.severe("Invalid config field: " + String.join(".", split) + " for " + instance.getClass().getSimpleName());
             return null;
         }
     }
@@ -685,7 +684,7 @@ public class YamlConfig {
     }
 
     public void dispose() {
-        this.placeholders.forEach(dev.igrammine.commons.config.Placeholders.placeholders::remove);
+        this.placeholders.forEach(dev.twilightsociety.ijoiner.commons.config.Placeholders.placeholders::remove);
         this.placeholders.clear();
         this.cachedSerializers.clear();
         this.prefix = null;
@@ -819,7 +818,7 @@ public class YamlConfig {
 
 
     /**
-     * Allows to use {@link dev.igrammine.commons.config.Placeholders#replace(String, Object...)}
+     * Allows to use {@link dev.twilightsociety.ijoiner.commons.config.Placeholders#replace(String, Object...)}
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

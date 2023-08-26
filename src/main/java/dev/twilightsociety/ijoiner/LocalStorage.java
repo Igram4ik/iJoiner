@@ -1,6 +1,6 @@
 package dev.twilightsociety.ijoiner;
 
-import dev.twilightsociety.ijoiner.commons.YamlConfig;
+import dev.twilightsociety.ijoiner.commons.config.YamlConfig;
 
 import java.util.Map;
 

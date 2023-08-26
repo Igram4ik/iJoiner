@@ -17,17 +17,24 @@ public final class iJoiner extends JavaPlugin {
     public iDatabase database;
     public Map<String, LocalStorage.PLAYER> localStorage;
 
+    public static iJoiner getInstance() {
+        return instance;
+    }
+    private static iJoiner instance;
+
     private final StopWatch stopWatch = new StopWatch();
     @Override
     public void onEnable() {
+        instance = this;
         log("&7[&6&l\\&7] &6iJoiner запущен." + " &7[Работа его будет асинхронна и тут же окончена для ядра.]");
         CompletableFuture.runAsync(this::reload);
     }
 
-    public synchronized void reload() {
+    public synchronized boolean reload() {
         if (!getDataFolder().exists())
             getDataFolder().mkdir();
         Settings.IMP.reload(getDataFolder().toPath().resolve("config.yml"));
+        Settings.IMP.setLogger(Bukkit.getLogger());
 
         if (Settings.IMP.STORAGE.TYPE == Settings.STORAGES.MYSQL || Settings.IMP.STORAGE.TYPE == Settings.STORAGES.MARIADB) {
             var sql = Settings.IMP.STORAGE.SQL;
@@ -46,13 +53,13 @@ public final class iJoiner extends JavaPlugin {
                     sql.USE_SSL
             );
             if (!database.setup())
-                return;
+                return false;
         } else if (Settings.IMP.STORAGE.TYPE == Settings.STORAGES.LOCAL) {
             LocalStorage.LOCAL.reload(getDataFolder().toPath().resolve("players.yml"));
             this.localStorage = LocalStorage.LOCAL.PLAYERS;
         } else {
             log("&7[&6&l\\&7] &cКажется что-то пошло не так с загрузкой. &fПравильно ли стоит тип БД в конфигурационном файле?");
-            return;
+            return false;
         }
 
         Bukkit.getPluginManager().registerEvents(new Listener(), this);
@@ -63,10 +70,10 @@ public final class iJoiner extends JavaPlugin {
             Objects.requireNonNull(getCommand("ijoiner")).setAliases(List.of("ij"));
         } catch (NullPointerException ignored) {
             log("&7[&6&l\\&7] &cОшибка при регистраци команд. &7Кажется они убраны из plugin.yml.");
-            return;
+            return false;
         }
 
-
+        return true;
     }
 
     @Override
