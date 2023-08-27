@@ -80,6 +80,7 @@ public class iDatabase {
 
     static {
         Objects.requireNonNull(org.mariadb.jdbc.Driver.class);
+        Objects.requireNonNull(org.mariadb.jdbc.message.client.QuitPacket.class);
     }
 
     public Statement getStatement() {

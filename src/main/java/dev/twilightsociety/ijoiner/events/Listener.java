@@ -33,7 +33,7 @@ public class Listener implements org.bukkit.event.Listener {
             text = Settings.IMP.PATTERN;
 
             if (message.equalsIgnoreCase("default"))
-                text = DFS.get(random.nextInt(DFS.size()));
+                text = DFS.get(random.nextInt(DFS.size())).replace("%nl%", "\n");
 
             text = text.replace("%online%", getOnline()).replace("%player%", player.getName())
                     .replace("%prefix%", getPrefix(player))

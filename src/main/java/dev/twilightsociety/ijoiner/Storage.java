@@ -30,8 +30,7 @@ public class Storage {
 
     public static boolean clear(String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
-            log(String.valueOf(uuid));
-            if (db.update("UPDATE `%s` SET `text`='default' WHERE `player` LIKE `%s`;", db.getTName(), player)) {
+            if (db.update("UPDATE `%s` SET `text`='default' WHERE `player`='%s' OR `uuid`='%s';", db.getTName(), player, uuid)) {
                 return true;
             } else {
                 log("&7[&6&l\\&7] &cНе удалось очистить пользователский текст.");
@@ -50,7 +49,7 @@ public class Storage {
     public static boolean hasPlayer(String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
             try {
-                var result = db.query("SELECT * FROM `%s` WHERE `player` LIKE '%s';", db.getTName(), player);
+                var result = db.query("SELECT * FROM `%s` WHERE `player`='%s' OR `uuid`='%s';", db.getTName(), player, uuid);
                 return result.next();
             } catch (SQLException SQLE) {
                 log("&7[&6&l\\&7] &cОшибка при получении возможности редактирования польз-ого текста: &f" + SQLE.getMessage());
@@ -84,7 +83,7 @@ public class Storage {
 
     public static boolean setText(String text, String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
-            if (db.update("UPDATE `%s` SET `text`='%s' WHERE `player` LIKE '%s';", db.getTName(), text, player))
+            if (db.update("UPDATE `%s` SET `text`='%s' WHERE `player`='%s' OR `uuid`='%s';", db.getTName(), text, player, uuid))
                 return true;
             else {
                 log("&7[&6&l\\&7] &cНе удалось установить пользовательский текст.");
@@ -102,7 +101,7 @@ public class Storage {
     public static String getText(String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
             try {
-                ResultSet set = db.query("SELECT `text` FROM `%s` WHERE `player`, `uuid` LIKE '%s', '%s';", db.getTName(), player, String.valueOf(uuid));
+                ResultSet set = db.query("SELECT `text` FROM `%s` WHERE `player`='%s' OR `uuid`='%s';", db.getTName(), player, uuid);
                 if (set.next()) {
                     return set.getString("text");
                 } else return null;
