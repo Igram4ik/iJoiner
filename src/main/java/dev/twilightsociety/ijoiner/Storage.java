@@ -3,6 +3,7 @@ package dev.twilightsociety.ijoiner;
 import dev.twilightsociety.ijoiner.sql.iDatabase;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
@@ -19,11 +20,13 @@ public class Storage {
         } else if (ST.TYPE == Settings.STORAGES.LOCAL) {
             type = Settings.STORAGES.LOCAL;
             local = pl.localStorage;
+            playersFile = iJoiner.getInstance().getDataFolder().toPath().resolve("players.yml").toFile();
         }
     }
     private static Settings.STORAGES type;
     private static Map<String, LocalConfigStorage.PLAYER> local;
     private static iDatabase db;
+    private static File playersFile;
 
     public static boolean clear(String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
@@ -36,6 +39,7 @@ public class Storage {
             }
         } else {
             local.remove(player);
+            LocalConfigStorage.LOCAL.save(playersFile);
             return true;
         }
     }
@@ -70,6 +74,7 @@ public class Storage {
             }
         } else {
             LocalConfigStorage.Manager.addPlayer(player, uuid.toString(), text);
+            LocalConfigStorage.LOCAL.save(playersFile);
             return true;
         }
     }

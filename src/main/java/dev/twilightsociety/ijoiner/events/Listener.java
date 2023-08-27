@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.List;
 import java.util.Random;
 
+import static dev.twilightsociety.ijoiner.iJoiner.log;
+
 public class Listener implements org.bukkit.event.Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent PJE) {
@@ -25,6 +27,11 @@ public class Listener implements org.bukkit.event.Listener {
         var DFS = Settings.IMP.DEFAULTS;
         if (Storage.hasPlayer(player)) {
             var message = Storage.getText(player);
+            if (Settings.IMP.DEBUG)
+                log("&7[&6&l\\&7] &fБыл получен текст &7[%s]&f: %s", player.getName(), message);
+
+            text = Settings.IMP.PATTERN;
+
             if (message.equalsIgnoreCase("default"))
                 text = DFS.get(random.nextInt(DFS.size()));
 
