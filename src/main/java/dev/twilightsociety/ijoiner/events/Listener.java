@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.List;
 import java.util.Random;
 
 public class Listener implements org.bukkit.event.Listener {
@@ -21,10 +22,11 @@ public class Listener implements org.bukkit.event.Listener {
         String text = "";
         var random = new Random();
 
+        var DFS = Settings.IMP.DEFAULTS;
         if (Storage.hasPlayer(player)) {
             var message = Storage.getText(player);
             if (message.equalsIgnoreCase("default"))
-                text = Settings.IMP.DEFAULTS.get(random.nextInt(Settings.IMP.DEFAULTS.size()));
+                text = DFS.get(random.nextInt(DFS.size()));
 
             text = text.replace("%online%", getOnline()).replace("%player%", player.getName())
                     .replace("%prefix%", getPrefix(player))
@@ -33,7 +35,7 @@ public class Listener implements org.bukkit.event.Listener {
                     .replace("%rsuffix%", getRSuffix(player));
             text = text.replace("%message%", message);
         } else {
-            text = Settings.IMP.DEFAULTS.get(random.nextInt(Settings.IMP.DEFAULTS.size()));
+            text = DFS.get(random.nextInt(DFS.size()));
             text = text.replace("%online%", getOnline()).replace("%player%", player.getName())
                     .replace("%prefix%", getPrefix(player))
                     .replace("%suffix%", getSuffix(player))
