@@ -67,6 +67,7 @@ public final class iJoiner extends JavaPlugin {
             log("&7[&6&l\\&7] &cКажется что-то пошло не так с загрузкой. &fПравильно ли стоит тип БД в конфигурационном файле?");
             return false;
         }
+        new Storage(this);
 
         //JavaPlugin papi = null;
         //try {

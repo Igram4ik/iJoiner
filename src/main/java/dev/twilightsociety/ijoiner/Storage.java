@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Locale;
 import java.util.UUID;
 
 import static dev.twilightsociety.ijoiner.iJoiner.log;
