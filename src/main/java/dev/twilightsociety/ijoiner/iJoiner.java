@@ -52,7 +52,7 @@ public final class iJoiner extends JavaPlugin {
                             "(`id` INT(5) PRIMARY KEY AUTO_INCREMENT, " +
                             "`uuid` VARCHAR(36) NOT NULL, " +
                             "`player` VARCHAR(16) NOT NULL," +
-                            "`text` VARCHAR(35) NOT NULL) DEFAULT CHARSET='utf8b';",
+                            "`text` VARCHAR(35) NOT NULL) DEFAULT CHARSET='utf8';",
                     sql.USE_SSL
             );
             if (!database.setup())

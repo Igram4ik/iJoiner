@@ -39,7 +39,7 @@ public class Storage {
             }
         } else {
             local.remove(player);
-            LocalConfigStorage.LOCAL.save(playersFile);
+            LocalConfigStorage.LOCAL.reload(playersFile);
             return true;
         }
     }
@@ -50,7 +50,7 @@ public class Storage {
     public static boolean hasPlayer(String player, UUID uuid) {
         if (type == Settings.STORAGES.MYSQL) {
             try {
-                var result = db.query("SELECT * FROM `%s` WHERE `player`, `uuid` SET '%s', '%s';", db.getTName(), player, uuid);
+                var result = db.query("SELECT * FROM `%s` WHERE `player` LIKE '%s';", db.getTName(), player);
                 return result.next();
             } catch (SQLException SQLE) {
                 log("&7[&6&l\\&7] &cОшибка при получении возможности редактирования польз-ого текста: &f" + SQLE.getMessage());
@@ -74,7 +74,7 @@ public class Storage {
             }
         } else {
             LocalConfigStorage.Manager.addPlayer(player, uuid.toString(), text);
-            LocalConfigStorage.LOCAL.save(playersFile);
+            LocalConfigStorage.LOCAL.reload(playersFile);
             return true;
         }
     }

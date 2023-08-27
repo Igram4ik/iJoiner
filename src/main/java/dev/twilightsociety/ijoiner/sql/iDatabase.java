@@ -43,20 +43,6 @@ public class iDatabase {
     public Connection connection;
     public Statement statement;
 
-    public void startKeepAlive() {
-        Bukkit.getScheduler()
-                .runTaskTimerAsynchronously(iJoiner.getInstance(),
-                        () -> {
-                            try {
-                                if (connection.isClosed()) {
-                                    connection = dataSource.getConnection();
-                                    statement = connection.createStatement();
-                                }
-                            } catch (SQLException e) {
-                                log("&7[&6&l\\&7] &cСтранная ошибка SQL: &f" + e.getMessage());
-                            }
-                        }, 10L, 300L);
-    }
     public boolean setup() {
         try { dataSource = new HikariDataSource(HConfig); }
         catch (RuntimeException RE) {
@@ -76,7 +62,6 @@ public class iDatabase {
             }
             else
                 log("&7[&6&l\\&7] &cПроизошла ошибка при загрузки таблицы.");
-            startKeepAlive();
             return true;
         }
         catch (SQLException SQLE) {
@@ -89,7 +74,6 @@ public class iDatabase {
         HConfig.setPoolName(Name);
         HConfig.setUsername(User);
         HConfig.setPassword(Password);
-        HConfig.setKeepaliveTime(1000);
         HConfig.setJdbcUrl("jdbc:mariadb://" + Host + "/" + Database + ((useSSL ? "?useSSL=true" : "")));
         HConfig.setDriverClassName("org.mariadb.jdbc.Driver");
     }
