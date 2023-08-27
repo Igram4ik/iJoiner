@@ -39,7 +39,8 @@ public class Listener implements org.bukkit.event.Listener {
                     .replace("%prefix%", getPrefix(player))
                     .replace("%suffix%", getSuffix(player))
                     .replace("%rprefix%", getRPrefix(player))
-                    .replace("%rsuffix%", getRSuffix(player));
+                    .replace("%rsuffix%", getRSuffix(player))
+                    .replace("%nl%", "\n");
         }
         return text;
     }
