@@ -5,8 +5,8 @@ import dev.twilightsociety.ijoiner.events.Listener;
 import dev.twilightsociety.ijoiner.sql.iDatabase;
 import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,13 +28,12 @@ public final class iJoiner extends JavaPlugin {
         log("&7[&6&l\\&7] &6iJoiner запущен." + " &7[Работа его будет асинхронна и тут же окончена для ядра.]");
         var run = CompletableFuture.runAsync(this::reload);
         if (run.isCompletedExceptionally()) {
-            run.exceptionally((throwable -> {
-                log(throwable.toString());
+            run.exceptionallyAsync((ex -> {
+                log(ex.toString());
                 return null;
             }));
         }
     }
-
     public synchronized boolean reload() {
         if (!getDataFolder().exists())
             getDataFolder().mkdir();
@@ -54,7 +53,7 @@ public final class iJoiner extends JavaPlugin {
                             "(`id` INT(5) PRIMARY KEY AUTO_INCREMENT, " +
                             "`uuid` VARCHAR(36) NOT NULL, " +
                             "`player` VARCHAR(16) NOT NULL," +
-                            "`text` VARCHAR(35) NOT NULL) DEFAULT CHARSET=\"utf8bin\";",
+                            "`text` VARCHAR(35) NOT NULL) DEFAULT CHARSET='utf8';",
                     sql.USE_SSL
             );
             if (!database.setup())
@@ -77,12 +76,18 @@ public final class iJoiner extends JavaPlugin {
         //    papiEnabled = true;
         //} else log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
 
-        Bukkit.getPluginManager().registerEvents(new Listener(), this);
+        if (Settings.IMP.ENABLED) {
+            var listener = new Listener();
+            PlayerLoginEvent.getHandlerList().unregister(this);
+            Bukkit.getPluginManager().registerEvents(listener, this);
+        } else log("&7[&6&l\\&7] &eiJoiner выключен.");
+
         try {
             var commands = new Commands(this);
-            Objects.requireNonNull(getCommand("ijoiner")).setExecutor(commands);
-            Objects.requireNonNull(getCommand("ijoiner")).setTabCompleter(commands);
-            Objects.requireNonNull(getCommand("ijoiner")).setAliases(List.of("ij"));
+            var PluginCommand = Objects.requireNonNull(Bukkit.getPluginCommand("ijoiner"));
+            PluginCommand.setAliases(List.of("ij", "joiner"));
+            PluginCommand.setTabCompleter(commands);
+            PluginCommand.setExecutor(commands);
         } catch (NullPointerException ignored) {
             log("&7[&6&l\\&7] &cОшибка при регистраци команд. &7Кажется они убраны из plugin.yml.");
             return false;
@@ -97,8 +102,6 @@ public final class iJoiner extends JavaPlugin {
         database.close();
         log("&7[&6&l\\&7] &6iJoiner успешно выключен.");
     }
-
-
     public static void log(String str, Object... args) {
         Bukkit.getLogger().info(String.format(str, args).replace("&", "§"));
     }

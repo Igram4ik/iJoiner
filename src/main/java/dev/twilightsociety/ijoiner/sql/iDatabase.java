@@ -18,7 +18,7 @@ import java.util.Objects;
 import static dev.twilightsociety.ijoiner.iJoiner.log;
 
 public class iDatabase {
-    public iDatabase(String Name, String host, String user, String password, String db, String TableName, @Language("sql") String Table, boolean useSSL) {
+    public iDatabase(String Name, String host, String user, String password, String db, String TableName, @Language("SQL") String Table, boolean useSSL) {
         this.Name = Name;
         this.Host = host;
         this.Database = db;
