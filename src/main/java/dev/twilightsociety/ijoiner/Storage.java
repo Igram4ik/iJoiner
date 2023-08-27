@@ -27,12 +27,17 @@ public class Storage {
     private static iDatabase db;
 
     public static boolean clear(String player, UUID uuid) {
-        log(String.valueOf(uuid));
-        if (db.update("UPDATE `%s` SET `text`='default' WHERE `uuid`, `player` LIKE `%s`, `%s`;", db.getTName(), player, uuid)) {
-            return true;
+        if (type == Settings.STORAGES.MYSQL) {
+            log(String.valueOf(uuid));
+            if (db.update("UPDATE `%s` SET `text`='default' WHERE `uuid`, `player` LIKE `%s`, `%s`;", db.getTName(), player, uuid)) {
+                return true;
+            } else {
+                log("&7[&6&l\\&7] &cНе удалось очистить пользователский текст.");
+                return false;
+            }
         } else {
-            log("&7[&6&l\\&7] &cНе удалось очистить пользователский текст.");
-            return false;
+            local.PLAYERS.remove(player);
+            return true;
         }
     }
     public static boolean clear(Player player) {
