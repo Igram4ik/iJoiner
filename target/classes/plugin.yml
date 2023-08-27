@@ -1,0 +1,9 @@
+name: iJoiner
+version: '1.1'
+main: dev.twilightsociety.ijoiner.iJoiner
+api-version: '1.18'
+softdepend: [PlaceholderAPI]
+authors: [Igram4ik]
+description: Плагин на приветствие
+commands:
+  ijoiner:

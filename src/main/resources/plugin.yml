@@ -7,3 +7,14 @@ authors: [Igram4ik]
 description: Плагин на приветствие
 commands:
   ijoiner:
+    description: "Команды на пользовательские заходы."
+permissions:
+  ijoiner.clear:
+    description: "Очистка"
+    default: not op
+  ijoiner.set:
+    description: "Установка"
+    default: not op
+  ijoiner.reload:
+    description: "Перезагрузка"
+    default: op
