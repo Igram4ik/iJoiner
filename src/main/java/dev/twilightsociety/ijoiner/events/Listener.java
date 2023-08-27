@@ -2,7 +2,6 @@ package dev.twilightsociety.ijoiner.events;
 import dev.twilightsociety.ijoiner.Settings;
 import dev.twilightsociety.ijoiner.Storage;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
