@@ -3,8 +3,12 @@ package dev.twilightsociety.ijoiner.sql;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.twilightsociety.ijoiner.Settings;
+import dev.twilightsociety.ijoiner.iJoiner;
+import org.bukkit.Bukkit;
+import org.checkerframework.checker.units.qual.N;
 import org.intellij.lang.annotations.Language;
 
+import javax.annotation.WillNotClose;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +44,18 @@ public class iDatabase {
     public Statement statement;
 
     public void startKeepAlive() {
-
+        Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(iJoiner.getInstance(),
+                        () -> {
+                            try {
+                                if (connection.isClosed()) {
+                                    connection = dataSource.getConnection();
+                                    statement = connection.createStatement();
+                                }
+                            } catch (SQLException e) {
+                                log("&7[&6&l\\&7] &cСтранная ошибка SQL: &f" + e.getMessage());
+                            }
+                        }, 10L, 300L);
     }
     public boolean setup() {
         try { dataSource = new HikariDataSource(HConfig); }
@@ -87,11 +102,18 @@ public class iDatabase {
         if (statement == null) return null;
         else return statement;
     }
+    public String getTName() {
+        return TableName;
+    }
 
     public boolean update(@Language("sql") String SQL) {
         try {
             if (Settings.IMP.DEBUG)
                 log("&7[&6&l\\&7] &bSQL &fDEBUG: &6" + SQL);
+            if (connection.isClosed()) {
+                connection = dataSource.getConnection();
+                statement = connection.createStatement();
+            }
             statement.executeUpdate(SQL);
             return true;
         } catch (SQLException SQLE) {
@@ -121,12 +143,20 @@ public class iDatabase {
         try {
             if (Settings.IMP.DEBUG)
                 log("&7[&6&l\\&7] &bSQL &fQUERY: &6" + SQL);
+            if (connection.isClosed()) {
+                connection = dataSource.getConnection();
+                statement = connection.createStatement();
+            }
             return statement.executeQuery(SQL);
         }
         catch (SQLException SQLE) {
             log("&7[&6&l\\&7] &cОшибка SQL &7["+Name+"]&c: &f" + SQLE.getMessage());
             return null;
         }
+    }
+    @WillNotClose
+    public ResultSet query(@Language("sql") String SQL, Object... objects) {
+        return query(String.format(SQL, objects));
     }
     public boolean close() {
         try {

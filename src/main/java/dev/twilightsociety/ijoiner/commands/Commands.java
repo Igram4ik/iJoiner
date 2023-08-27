@@ -1,6 +1,7 @@
 package dev.twilightsociety.ijoiner.commands;
 
 import dev.twilightsociety.ijoiner.Settings;
+import dev.twilightsociety.ijoiner.Storage;
 import dev.twilightsociety.ijoiner.iJoiner;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -8,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,11 +30,13 @@ public class Commands implements CommandExecutor, TabCompleter {
         clearFailed = pLC(MSGS.CLEAR_FAILED);
         setted = pLC(MSGS.SETTED);
         setFailed = pLC(MSGS.SET_FAILED);
+        notplayer = pLC(MSGS.NOT_FOR_CONSOLE);
     }
     private final iJoiner plugin;
     private final Component reload;
     private final Component reloadFailed;
     private final Component unknown;
+    public final Component notplayer;
     private final Component noPerm;
     private final Component noArgs;
     private final Component cleared;
@@ -46,10 +50,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             sender.sendMessage(unknown);
             return true;
         }
-        if (!sender.hasPermission("ijoiner")) {
-            sender.sendMessage(noPerm);
-            return true;
-        }
+
         //
         if (args[0].equalsIgnoreCase("reload")) {
             if (sender.hasPermission("ijoiner.reload")) {
@@ -63,9 +64,39 @@ public class Commands implements CommandExecutor, TabCompleter {
             }
         } else if (args[0].equalsIgnoreCase("clear")) {
             if (sender.hasPermission("ijoiner.clear")) {
-                if ()
+                if (sender instanceof Player player) {
+                    if (Storage.clear(player))
+                        player.sendMessage(cleared);
+                    else
+                        player.sendMessage(clearFailed);
+                } else sender.sendMessage(notplayer);
+            } else sender.sendMessage(noPerm);
+        } else if (args[0].equalsIgnoreCase("set")) {
+            if (args.length == 1) {
+                sender.sendMessage(noArgs);
+                return true;
             }
-        }
+            if (sender.hasPermission("ijoiner.set")) {
+                if (sender instanceof Player player) {
+                    StringBuilder text = new StringBuilder();
+                    for (int i = 1; i < args.length; i++) {
+                        text.append(args[i]);
+                        text.append(" ");
+                    }
+                    if (Storage.hasPlayer(player)) {
+                        if (Storage.setText(text.toString(), player))
+                            sender.sendMessage(setted);
+                        else
+                            sender.sendMessage(setFailed);
+                    } else {
+                        if (Storage.addPlayer(text.toString(), player))
+                            sender.sendMessage(setted);
+                        else
+                            sender.sendMessage(setFailed);
+                    }
+                } else sender.sendMessage(notplayer);
+            } else sender.sendMessage(noPerm);
+        } else sender.sendMessage(unknown);
         //
         return true;
     }
@@ -75,9 +106,13 @@ public class Commands implements CommandExecutor, TabCompleter {
         if (args.length >= 1) {
             var tab = new ArrayList<String>();
             if (args.length == 1) {
-                if (sender.hasPermission("ijoiner.custom")) {
-
-                }
+                if (sender.hasPermission("ijoiner.set"))
+                    tab.add("set");
+                if (sender.hasPermission("ijoiner.clear"))
+                    tab.add("clear");
+                if (sender.hasPermission("ijoiner.reload"))
+                    tab.add("reload");
+                return tab;
             }
         }
         return new ArrayList<>();

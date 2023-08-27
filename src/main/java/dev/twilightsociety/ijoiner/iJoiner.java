@@ -3,6 +3,7 @@ package dev.twilightsociety.ijoiner;
 import dev.twilightsociety.ijoiner.commands.Commands;
 import dev.twilightsociety.ijoiner.events.Listener;
 import dev.twilightsociety.ijoiner.sql.iDatabase;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,11 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public final class iJoiner extends JavaPlugin {
     public iDatabase database;
-    public Map<String, LocalStorage.PLAYER> localStorage;
+    public Map<String, LocalConfigStorage.PLAYER> localStorage;
 
     public static iJoiner getInstance() {
         return instance;
@@ -55,12 +55,22 @@ public final class iJoiner extends JavaPlugin {
             if (!database.setup())
                 return false;
         } else if (Settings.IMP.STORAGE.TYPE == Settings.STORAGES.LOCAL) {
-            LocalStorage.LOCAL.reload(getDataFolder().toPath().resolve("players.yml"));
-            this.localStorage = LocalStorage.LOCAL.PLAYERS;
+            LocalConfigStorage.LOCAL.reload(getDataFolder().toPath().resolve("players.yml"));
+            this.localStorage = LocalConfigStorage.LOCAL.PLAYERS;
         } else {
             log("&7[&6&l\\&7] &cКажется что-то пошло не так с загрузкой. &fПравильно ли стоит тип БД в конфигурационном файле?");
             return false;
         }
+
+        JavaPlugin papi = null;
+        try {
+            papi = getPlugin(PlaceholderAPIPlugin.class);
+        } catch (IllegalStateException | IllegalArgumentException IE) {
+            log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
+        }
+        if (papi != null && papi.isEnabled()) {
+            papiEnabled = true;
+        } else log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
 
         Bukkit.getPluginManager().registerEvents(new Listener(), this);
         try {
@@ -75,6 +85,7 @@ public final class iJoiner extends JavaPlugin {
 
         return true;
     }
+    public static boolean papiEnabled = false;
 
     @Override
     public void onDisable() {

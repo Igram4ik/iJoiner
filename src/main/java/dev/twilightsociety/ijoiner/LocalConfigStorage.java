@@ -4,9 +4,9 @@ import dev.twilightsociety.ijoiner.commons.config.YamlConfig;
 
 import java.util.Map;
 
-public class LocalStorage extends YamlConfig {
+public class LocalConfigStorage extends YamlConfig {
     @Ignore
-    public static final LocalStorage LOCAL = new LocalStorage();
+    public static final LocalConfigStorage LOCAL = new LocalConfigStorage();
 
     @Comment("Список игроков и их сообщения")
     public Map<String, PLAYER> PLAYERS = Map.of(
