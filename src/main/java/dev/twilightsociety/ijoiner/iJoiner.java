@@ -5,12 +5,15 @@ import dev.twilightsociety.ijoiner.events.Listener;
 import dev.twilightsociety.ijoiner.sql.iDatabase;
 import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public final class iJoiner extends JavaPlugin {
     public iDatabase database;
@@ -26,13 +29,11 @@ public final class iJoiner extends JavaPlugin {
     public void onEnable() {
         instance = this;
         log("&7[&6&l\\&7] &6iJoiner запущен." + " &7[Работа его будет асинхронна и тут же окончена для ядра.]");
-        var run = CompletableFuture.runAsync(this::reload);
-        if (run.isCompletedExceptionally()) {
-            run.exceptionally((throwable -> {
-                log(throwable.toString());
-                return null;
-            }));
-        }
+        CompletableFuture.runAsync(this::reload)
+                .exceptionallyAsync((t) -> {
+                    log("&7[&6&l\\&7] &cПроизошла ошибка при загрузке iJoiner: &f" + t.getMessage());
+                    return null;
+                });
     }
 
     public synchronized boolean reload() {
@@ -80,9 +81,9 @@ public final class iJoiner extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Listener(), this);
         try {
             var commands = new Commands(this);
-            Objects.requireNonNull(getCommand("ijoiner")).setExecutor(commands);
-            Objects.requireNonNull(getCommand("ijoiner")).setTabCompleter(commands);
-            Objects.requireNonNull(getCommand("ijoiner")).setAliases(List.of("ij"));
+            PluginCommand command = Objects.requireNonNull(getCommand("ijoiner"));
+            command.setExecutor(commands);
+            command.setTabCompleter(commands);
         } catch (NullPointerException ignored) {
             log("&7[&6&l\\&7] &cОшибка при регистраци команд. &7Кажется они убраны из plugin.yml.");
             return false;
@@ -94,7 +95,8 @@ public final class iJoiner extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        database.close();
+        if (Settings.IMP.STORAGE.TYPE == Settings.STORAGES.MYSQL || Settings.IMP.STORAGE.TYPE == Settings.STORAGES.MARIADB)
+            database.close();
         log("&7[&6&l\\&7] &6iJoiner успешно выключен.");
     }
 

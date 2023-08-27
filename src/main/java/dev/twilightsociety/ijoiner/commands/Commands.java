@@ -65,10 +65,12 @@ public class Commands implements CommandExecutor, TabCompleter {
         } else if (args[0].equalsIgnoreCase("clear")) {
             if (sender.hasPermission("ijoiner.clear")) {
                 if (sender instanceof Player player) {
-                    if (Storage.clear(player))
-                        player.sendMessage(cleared);
-                    else
-                        player.sendMessage(clearFailed);
+                    if (sender.hasPermission("ijoiner.clear")) {
+                        if (Storage.clear(player))
+                            player.sendMessage(cleared);
+                        else
+                            player.sendMessage(clearFailed);
+                    } else sender.sendMessage(noPerm);
                 } else sender.sendMessage(notplayer);
             } else sender.sendMessage(noPerm);
         } else if (args[0].equalsIgnoreCase("set")) {
@@ -78,22 +80,24 @@ public class Commands implements CommandExecutor, TabCompleter {
             }
             if (sender.hasPermission("ijoiner.set")) {
                 if (sender instanceof Player player) {
-                    StringBuilder text = new StringBuilder();
-                    for (int i = 1; i < args.length; i++) {
-                        text.append(args[i]);
-                        text.append(" ");
-                    }
-                    if (Storage.hasPlayer(player)) {
-                        if (Storage.setText(text.toString(), player))
-                            sender.sendMessage(setted);
-                        else
-                            sender.sendMessage(setFailed);
-                    } else {
-                        if (Storage.addPlayer(text.toString(), player))
-                            sender.sendMessage(setted);
-                        else
-                            sender.sendMessage(setFailed);
-                    }
+                    if (sender.hasPermission("ijoiner.set")) {
+                        StringBuilder text = new StringBuilder();
+                        for (int i = 1; i < args.length; i++) {
+                            text.append(args[i]);
+                            text.append(" ");
+                        }
+                        if (Storage.hasPlayer(player)) {
+                            if (Storage.setText(text.toString(), player))
+                                sender.sendMessage(setted);
+                            else
+                                sender.sendMessage(setFailed);
+                        } else {
+                            if (Storage.addPlayer(text.toString(), player))
+                                sender.sendMessage(setted);
+                            else
+                                sender.sendMessage(setFailed);
+                        }
+                    } else sender.sendMessage(noPerm);
                 } else sender.sendMessage(notplayer);
             } else sender.sendMessage(noPerm);
         } else sender.sendMessage(unknown);
@@ -108,10 +112,12 @@ public class Commands implements CommandExecutor, TabCompleter {
             if (args.length == 1) {
                 if (sender.hasPermission("ijoiner.set"))
                     tab.add("set");
-                if (sender.hasPermission("ijoiner.clear"))
-                    tab.add("clear");
-                if (sender.hasPermission("ijoiner.reload"))
-                    tab.add("reload");
+                if (sender instanceof Player) {
+                    if (sender.hasPermission("ijoiner.clear"))
+                        tab.add("clear");
+                    if (sender.hasPermission("ijoiner.reload"))
+                        tab.add("reload");
+                }
                 return tab;
             }
         }

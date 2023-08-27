@@ -8,6 +8,9 @@ description: Плагин на приветствие
 commands:
   ijoiner:
     description: "Команды на пользовательские заходы."
+    aliases:
+      - ij
+      - joiner
 permissions:
   ijoiner.clear:
     description: "Очистка"

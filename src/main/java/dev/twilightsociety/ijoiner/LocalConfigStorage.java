@@ -3,7 +3,6 @@ package dev.twilightsociety.ijoiner;
 import dev.twilightsociety.ijoiner.commons.config.YamlConfig;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class LocalConfigStorage extends YamlConfig {
     @Ignore
@@ -14,12 +13,16 @@ public class LocalConfigStorage extends YamlConfig {
             "Player1", createNodeSequence(PLAYER.class, "00000000-0000-0000-0000-000000000000", "default")
     );
     public static class PLAYER {
-        public PLAYER(UUID uuid, String text) {
-            this.UUID = uuid.toString();
-            this.TEXT = text;
-        }
         public String UUID;
         @Comment(value = "Если default, то рандомный из конфига", at = Comment.At.SAME_LINE)
         public String TEXT;
+    }
+    public static class Manager {
+        public static void addPlayer(String player, String UUID, String TEXT) {
+            var newPlayer = new PLAYER();
+            newPlayer.TEXT = TEXT;
+            newPlayer.UUID = UUID;
+            LOCAL.PLAYERS.put(player, newPlayer);
+        }
     }
 }

@@ -11,14 +11,13 @@ public class Settings extends YamlConfig {
     @Comment("""
             iJoiner - Igram4ik
             #Пользовательские сообщения при заходе на сервер.
-            #
+            
             #Права:
             # - ijoiner.reload - Перезагрузить плагин (/ij reload)
             # - ijoiner.clear - Очистить польз-ий текст (/ij clear)
             # - ijoiner.set - Поставить польз-ий текст (/ij set)
-            #
-            #Если true, то сообщения включены.
-            """)
+            
+            #Если true, то сообщения включены.""")
     public boolean ENABLED = true;
 
     @Comment("Вывод debug сообщений, необходимо если что-то идет не так.")
@@ -27,6 +26,7 @@ public class Settings extends YamlConfig {
     @Create
     public STORAGE STORAGE;
     public static class STORAGE {
+        @Comment("Доступные: LOCAL, MYSQL/MARIADB")
         public STORAGES TYPE = STORAGES.LOCAL;
         @Create
         public SQL SQL;

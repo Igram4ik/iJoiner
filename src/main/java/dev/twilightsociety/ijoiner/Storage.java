@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.UUID;
 
 import static dev.twilightsociety.ijoiner.iJoiner.log;
@@ -65,7 +66,7 @@ public class Storage {
                 return false;
             }
         } else {
-            local.PLAYERS.put(player, new LocalConfigStorage.PLAYER(uuid, text));
+            LocalConfigStorage.Manager.addPlayer(player, uuid.toString(), text);
             return true;
         }
     }
