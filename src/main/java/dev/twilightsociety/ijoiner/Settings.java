@@ -10,14 +10,14 @@ public class Settings extends YamlConfig {
 
     @Comment("""
             iJoiner - Igram4ik
-            Пользовательские сообщения при заходе на сервер.
-            
-            Права:
-            - ijoiner.reload - Перезагрузить плагин (/ij reload)
-            - ijoiner.clear - Очистить польз-ий текст (/ij clear)
-            - ijoiner.set - Поставить польз-ий текст (/ij set)
-            
-            Если true, то сообщения включены.
+            #Пользовательские сообщения при заходе на сервер.
+            #
+            #Права:
+            # - ijoiner.reload - Перезагрузить плагин (/ij reload)
+            # - ijoiner.clear - Очистить польз-ий текст (/ij clear)
+            # - ijoiner.set - Поставить польз-ий текст (/ij set)
+            #
+            #Если true, то сообщения включены.
             """)
     public boolean ENABLED = true;
 
@@ -48,34 +48,34 @@ public class Settings extends YamlConfig {
 
     @Comment("""
             Паттерн для пользовательских сообщений.
-            Он необходим для того, чтобы сделать рамки сообщений, которые игрок может редактировать.
-            
-            Например: "&c[!] %player% %message% (Зашел на сервер)"
-              P.S. %message% - это текст, который задал игрок через команду
-            Итог: "[!] Igram4ik пернул с подливой (Зашел на сервер)"
-            
-            Плейсхолдеры:
-             - %player% - никнейм игрока
-             - %prefix% - префикс игрока (%vault_prefix%)
-             - %suffix% - суффикс игрока (%vault_suffix%)
-             - %rprefix% - донатный префикс игрока (%vault_rankprefix%)
-             - %rsuffix% - донатный суффикс игрока (%vault_ranksuffix%)
-             - %online% - онлайн сервера
+            #Он необходим для того, чтобы сделать рамки сообщений, которые игрок может редактировать.
+            #
+            #Например: "&c[!] %player% %message% (Зашел на сервер)"
+            #  P.S. %message% - это текст, который задал игрок через команду
+            #Итог: "[!] Igram4ik пернул с подливой (Зашел на сервер)"
+            #
+            #Плейсхолдеры:
+            # - %player% - никнейм игрока
+            # - %prefix% - префикс игрока (%vault_prefix%)
+            # - %suffix% - суффикс игрока (%vault_suffix%)
+            # - %rprefix% - донатный префикс игрока (%vault_rankprefix%)
+            # - %rsuffix% - донатный суффикс игрока (%vault_ranksuffix%)
+            # - %online% - онлайн сервера
             """)
     public String PATTERN = "%player% - %message%";
 
     @Comment("""
             Стандартные случайные сообщения. (Если игрок себе ничего не ставил.)
-            
-            Плейсхолдеры:
-             - %player% - никнейм игрока
-             - %prefix% - префикс игрока (%vault_prefix%)
-             - %suffix% - суффикс игрока (%vault_suffix%)
-             - %rprefix% - донатный префикс игрока (%vault_rankprefix%)
-             - %rsuffix% - донатный суффикс игрока (%vault_ranksuffix%)
-             - %online% - онлайн сервера
-             
-             Также поддерживается перенос строки через - "%nl%"
+            #
+            #Плейсхолдеры:
+            # - %player% - никнейм игрока
+            # - %prefix% - префикс игрока (%vault_prefix%)
+            # - %suffix% - суффикс игрока (%vault_suffix%)
+            # - %rprefix% - донатный префикс игрока (%vault_rankprefix%)
+            # - %rsuffix% - донатный суффикс игрока (%vault_ranksuffix%)
+            # - %online% - онлайн сервера
+            # 
+            # Также поддерживается перенос строки через - "%nl%"
             """)
     public List<String> DEFAULTS = List.of(
             "&c&l[!] &f%player% &7зашёл на сервер, выбив дверь.",

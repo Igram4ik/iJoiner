@@ -1,7 +1,7 @@
 name: iJoiner
 version: '${project.version}'
 main: dev.twilightsociety.ijoiner.iJoiner
-api-version: '1.18'
+api-version: '1.13'
 softdepend: [PlaceholderAPI]
 authors: [Igram4ik]
 description: Плагин на приветствие

@@ -3,7 +3,6 @@ package dev.twilightsociety.ijoiner;
 import dev.twilightsociety.ijoiner.commands.Commands;
 import dev.twilightsociety.ijoiner.events.Listener;
 import dev.twilightsociety.ijoiner.sql.iDatabase;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +26,13 @@ public final class iJoiner extends JavaPlugin {
     public void onEnable() {
         instance = this;
         log("&7[&6&l\\&7] &6iJoiner запущен." + " &7[Работа его будет асинхронна и тут же окончена для ядра.]");
-        CompletableFuture.runAsync(this::reload);
+        var run = CompletableFuture.runAsync(this::reload);
+        if (run.isCompletedExceptionally()) {
+            run.exceptionally((throwable -> {
+                log(throwable.toString());
+                return null;
+            }));
+        }
     }
 
     public synchronized boolean reload() {
@@ -62,15 +67,15 @@ public final class iJoiner extends JavaPlugin {
             return false;
         }
 
-        JavaPlugin papi = null;
-        try {
-            papi = getPlugin(PlaceholderAPIPlugin.class);
-        } catch (IllegalStateException | IllegalArgumentException IE) {
-            log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
-        }
-        if (papi != null && papi.isEnabled()) {
-            papiEnabled = true;
-        } else log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
+        //JavaPlugin papi = null;
+        //try {
+        //    papi = getPlugin();
+        //} catch (IllegalStateException | IllegalArgumentException IE) {
+        //    log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
+        //}
+        //if (papi != null && papi.isEnabled()) {
+        //    papiEnabled = true;
+        //} else log("&7[&6&l\\&7] &eКажется PAPI не запущен или не установлен. &7Плагину это не грозит, но не будут доступны некоторые плейсхолдеры.");
 
         Bukkit.getPluginManager().registerEvents(new Listener(), this);
         try {
