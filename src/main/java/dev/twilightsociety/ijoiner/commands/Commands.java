@@ -31,6 +31,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         setted = pLC(MSGS.SETTED);
         setFailed = pLC(MSGS.SET_FAILED);
         notplayer = pLC(MSGS.NOT_FOR_CONSOLE);
+        tooMuch = pLC(MSGS.TOO_MUCH);
     }
     private final iJoiner plugin;
     private final Component reload;
@@ -43,6 +44,7 @@ public class Commands implements CommandExecutor, TabCompleter {
     private final Component clearFailed;
     private final Component setted;
     private final Component setFailed;
+    private final Component tooMuch;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -53,7 +55,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
         //
         if (args[0].equalsIgnoreCase("reload")) {
-            if (sender.hasPermission("ijoiner.reload")) {
+            if (sender.hasPermission("ijoiner.reload") || sender.isOp()) {
                 if (iJoiner.getInstance().reload())
                     sender.sendMessage(reload);
                 else
@@ -63,42 +65,42 @@ public class Commands implements CommandExecutor, TabCompleter {
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("clear")) {
-            if (sender.hasPermission("ijoiner.clear")) {
                 if (sender instanceof Player player) {
-                    if (sender.hasPermission("ijoiner.clear")) {
+                    if (player.hasPermission("ijoiner.clear") || player.isOp()) {
                         if (Storage.clear(player))
                             player.sendMessage(cleared);
                         else
                             player.sendMessage(clearFailed);
                     } else sender.sendMessage(noPerm);
                 } else sender.sendMessage(notplayer);
-            } else sender.sendMessage(noPerm);
         } else if (args[0].equalsIgnoreCase("set")) {
             if (args.length == 1) {
                 sender.sendMessage(noArgs);
                 return true;
             }
-            if (sender.hasPermission("ijoiner.set")) {
-                if (sender instanceof Player player) {
-                    if (sender.hasPermission("ijoiner.set")) {
-                        StringBuilder text = new StringBuilder();
-                        for (int i = 1; i < args.length; i++) {
-                            text.append(args[i]);
-                            text.append(" ");
-                        }
-                        if (Storage.hasPlayer(player)) {
-                            if (Storage.setText(text.toString(), player))
-                                sender.sendMessage(setted);
-                            else
-                                sender.sendMessage(setFailed);
-                        } else {
-                            if (Storage.addPlayer(text.toString(), player))
-                                sender.sendMessage(setted);
-                            else
-                                sender.sendMessage(setFailed);
-                        }
-                    } else sender.sendMessage(noPerm);
-                } else sender.sendMessage(notplayer);
+            if (sender instanceof Player player) {
+                if (player.hasPermission("ijoiner.set") || player.isOp()) {
+                    StringBuilder text = new StringBuilder();
+                    for (int i = 1; i < args.length; i++) {
+                        text.append(args[i]);
+                        text.append(" ");
+                    }
+                    if (text.length() >= 35) {
+                        player.sendMessage(tooMuch);
+                        return true;
+                    }
+                    if (Storage.hasPlayer(player)) {
+                        if (Storage.setText(text.toString(), player))
+                            sender.sendMessage(setted);
+                        else
+                            sender.sendMessage(setFailed);
+                    } else {
+                        if (Storage.addPlayer(text.toString(), player))
+                            sender.sendMessage(setted);
+                        else
+                            sender.sendMessage(setFailed);
+                    }
+                } else sender.sendMessage(noPerm);
             } else sender.sendMessage(noPerm);
         } else sender.sendMessage(unknown);
         //
@@ -110,13 +112,13 @@ public class Commands implements CommandExecutor, TabCompleter {
         if (args.length >= 1) {
             var tab = new ArrayList<String>();
             if (args.length == 1) {
-                if (sender.hasPermission("ijoiner.set"))
-                    tab.add("set");
+                if (sender.hasPermission("ijoiner.reload") || sender.isOp())
+                    tab.add("reload");
                 if (sender instanceof Player) {
-                    if (sender.hasPermission("ijoiner.clear"))
+                    if (sender.hasPermission("ijoiner.set") || sender.isOp())
+                        tab.add("set");
+                    if (sender.hasPermission("ijoiner.clear") || sender.isOp())
                         tab.add("clear");
-                    if (sender.hasPermission("ijoiner.reload"))
-                        tab.add("reload");
                 }
                 return tab;
             }

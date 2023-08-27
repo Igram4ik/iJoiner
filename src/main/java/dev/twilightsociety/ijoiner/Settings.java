@@ -97,5 +97,6 @@ public class Settings extends YamlConfig {
         public String CLEAR_FAILED = "&c&l[!] &cНе удалось удалить пользовательский текст. &fОбратитесь к Администрацией";
         public String SETTED = "&c&l[!] &aПользовательский текст успешно установлен. &7(Он будет синхронизирован на всех режимах.)";
         public String SET_FAILED = "&c&l[!] &cНе удалось установить пользовательский текст. &fОбратитесь к Администрацией.";
+        public String TOO_MUCH = "&c&l[!] &cВаш текст слишком длинный!";
     }
 }
