@@ -5,25 +5,24 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 
 import static dev.twilightsociety.ijoiner.iJoiner.log;
 
 public class Storage {
-    private final iJoiner plugin;
     public Storage(iJoiner pl) {
-        plugin = pl;
         var ST = Settings.IMP.STORAGE;
         if (ST.TYPE == Settings.STORAGES.MARIADB || ST.TYPE == Settings.STORAGES.MYSQL) {
             type = Settings.STORAGES.MYSQL;
             db = pl.database;
         } else if (ST.TYPE == Settings.STORAGES.LOCAL) {
             type = Settings.STORAGES.LOCAL;
-            local = LocalConfigStorage.LOCAL;
+            local = pl.localStorage;
         }
     }
     private static Settings.STORAGES type;
-    private static LocalConfigStorage local;
+    private static Map<String, LocalConfigStorage.PLAYER> local;
     private static iDatabase db;
 
     public static boolean clear(String player, UUID uuid) {
@@ -36,7 +35,7 @@ public class Storage {
                 return false;
             }
         } else {
-            local.PLAYERS.remove(player);
+            local.remove(player);
             return true;
         }
     }
@@ -54,7 +53,7 @@ public class Storage {
                 return false;
             }
         } else {
-            return local.PLAYERS.containsKey(player);
+            return local.containsKey(player);
         }
     }
     public static boolean hasPlayer(Player player) {
@@ -87,7 +86,7 @@ public class Storage {
                 return false;
             }
         } else {
-            local.PLAYERS.get(player).TEXT = text;
+            local.get(player).TEXT = text;
             return true;
         }
     }
@@ -107,8 +106,8 @@ public class Storage {
                 return null;
             }
         } else {
-            if (local.PLAYERS.containsKey(player)) {
-                var p = local.PLAYERS.get(player);
+            if (local.containsKey(player)) {
+                var p = local.get(player);
                 if (p.UUID.equalsIgnoreCase(uuid.toString()))
                     return p.TEXT;
                 else return null;
