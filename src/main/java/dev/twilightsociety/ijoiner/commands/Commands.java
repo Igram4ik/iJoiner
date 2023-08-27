@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Commands implements CommandExecutor, TabCompleter {
-    public Commands(iJoiner plugin) {
-        this.plugin = plugin;
+    public Commands() {
 
         var MSGS = Settings.IMP.MESSAGES;
         reload = pLC(MSGS.RELOAD);
@@ -33,7 +32,6 @@ public class Commands implements CommandExecutor, TabCompleter {
         notplayer = pLC(MSGS.NOT_FOR_CONSOLE);
         tooMuch = pLC(MSGS.TOO_MUCH);
     }
-    private final iJoiner plugin;
     private final Component reload;
     private final Component reloadFailed;
     private final Component unknown;

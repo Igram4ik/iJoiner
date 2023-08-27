@@ -8,12 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public final class iJoiner extends JavaPlugin {
     public iDatabase database;
@@ -81,7 +78,7 @@ public final class iJoiner extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new Listener(), this);
         try {
-            var commands = new Commands(this);
+            var commands = new Commands();
             PluginCommand command = Objects.requireNonNull(getCommand("ijoiner"));
             command.setExecutor(commands);
             command.setTabCompleter(commands);
