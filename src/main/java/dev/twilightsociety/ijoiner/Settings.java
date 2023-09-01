@@ -1,6 +1,6 @@
 package dev.twilightsociety.ijoiner;
 
-import dev.twilightsociety.ijoiner.commons.config.YamlConfig;
+import dev.igrammine.commons.YamlConfig;
 
 import java.util.List;
 
